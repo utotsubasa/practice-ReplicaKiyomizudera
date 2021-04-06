@@ -2,8 +2,9 @@
   <div class="container">
     <div id="heading">
       <div id="left-heading">
+        <img :src="image">
         <ul id="list">
-          <li>PROJECT</li>
+          <li>{{ something }}</li>
           <li>ABOUT</li>
           <li>INFOMATION</li>
           <li>TABLOID</li>
@@ -16,39 +17,28 @@ through a variety of experimental expressions beyond convention.
       </div>
     </div>
     <div id="photos">
-      <div class="galary">
-        <div class="text shown">Indulging in flowers</div>
-        <div class="text hidden"></div>
-        <img class="photo" src="#">
-      </div>
-      <div class="galary">
-        <div class="text shown">Moon in your hands</div>
-        <div class="text hidden"></div>
-        <img class="photo" src="#">
-      </div>
-      <div class="galary">
-        <div class="text shown">One meeting, one oppotunity</div>
-        <div class="text hidden"></div>
-        <img class="photo" src="#">
-      </div>
-      <div class="galary">
-        <div class="text shown">Takuro Kuwata exh "Day After Day"</div>
-        <div class="text hidden"></div>
-        <img class="photo" src="#">
-      </div>
-      <div class="galary">
-        <div class="text shown">call:</div>
-        <div class="text hidden"></div>
-        <img class="photo" src="#">
-      </div>
+      <Galary
+        v-for="i in 5"
+        :key="i"
+        :text="text"
+      />
       <button class="btn more">more</button>
     </div>
   </div>
 </template>
 
 <script>
+import image from 'image.png'
+
 export default {
-  
+  data() {
+    const text = ['a', 'b', 'c', 'd', 'e']
+
+    return {
+      image,
+      text
+    }
+  }
 }
 </script>
 

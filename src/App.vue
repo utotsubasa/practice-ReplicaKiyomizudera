@@ -1,5 +1,5 @@
 <template>
-  <div id="app">
+  <div>
     <myheader></myheader>
     <mybody1></mybody1>
     <mybody2></mybody2>
