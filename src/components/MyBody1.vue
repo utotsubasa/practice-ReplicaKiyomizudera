@@ -20,7 +20,7 @@ through a variety of experimental expressions beyond convention.
       <Galary
         v-for="i in 5"
         :key="i"
-        :text="text"
+        :text="text[i]"
       />
       <button class="btn more">more</button>
     </div>
