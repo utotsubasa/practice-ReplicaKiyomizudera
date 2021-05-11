@@ -1,12 +1,12 @@
 <template>
   <div class="container">
     <span class="top-btn-area">
-        <sapn class="prev" v-on:click="prev"></sapn>
-        <span class="next" v-on:click="next"></span>
+        <sapn class="prev" v-on:click="$store.commit('prev')"></sapn>
+        <span class="next" v-on:click="$store.commit('next')"></span>
         <span class="down" v-on:click="down"></span>
     </span>
     <transition name="transition-title">
-    <div class="title-area" :style="{color: color}">
+    <div class="title-area" :style="{color: $store.getters.returnColor}">
       <h1 class="header-title">FEEL_KIYOMIZUDERA</h1>
       <p>
         From now on, Kiyomizu-dera will seek ...
@@ -14,16 +14,15 @@
     </div>
     </transition>
     <div id="slides">
-      <transition name="transition-slide-0">
-        <div class="slide slide-0" v-if="index==0"></div>
-      </transition>
-      <transition name="transition-slide-1">
-        <div class="slide slide-1" v-if="index==1"></div>
-      </transition>
+      <div v-for="(url,index) in urls" :key="index">
+        <transition name="transition-slide">
+          <div class="slide" v-if="$store.state.index==index" :style="{backgroundImage:url}"></div>
+        </transition>
+      </div>
     </div>
     <div class="ref-area">
       <transition name="transition-ref">
-        <a href="#" class="ref">{{returnText}} ------></a>
+        <a href="#" class="ref">{{$store.state.index}} ------></a>
       </transition>
     </div>
   </div>
@@ -33,46 +32,33 @@
 export default {
   data() {
     return {
-      index: 0,
-      color: "black"
+      color: "black",
+      urls: [
+        'url('+'http://www.imamiya.jp/haruhanakyoko/info/kiyomizu00trin.jpg'+')',
+        'url('+'https://upload.wikimedia.org/wikipedia/commons/3/35/Kiyomizu_Temple_-_01.jpg'+')',
+        'url('+'https://upload.wikimedia.org/wikipedia/commons/6/6b/Kiyomizu-dera-2a.jpg'+')',
+        'url('+'https://upload.wikimedia.org/wikipedia/commons/4/42/Kiyomizu-dera_in_Kyoto-r.jpg'+')',
+        'url('+'http://kyotomoyou.jp/sys/wp-content/uploads/2015/01/kiyomizudera-yuki-201501.jpg'+')'
+      ]
     }
   },
   mounted() {    
+    /*
     setInterval(() => {
-      this.index = (this.index+1)%2
+      this.$store.commit('next') //うまくいかないのなんで
     }, 5000)
+    */
+    this.$store.dispatch('slide')
   },
   computed: {
     returnText() {
-      if (this.index === 0) {
+      if (this.$store.state.index === 0) {
         return "day"
-      } else if (this.index === 1) {
+      } else if (this.$store.state.index === 1) {
         return "night"
       } else {
         return "hoge"
       }
-    }
-  },
-  watch: {
-    index(newIndex) {
-      if (newIndex === 0) {
-        this.color = "black"
-      } else if (newIndex === 1) {
-        this.color = "white"
-      } else {
-        this.color = "red"
-      }
-    }
-  },
-  methods: {
-    prev() {
-      this.index = (this.index -1 +2) %2
-    },
-    next() {
-      this.index = (this.index + 1) %2
-    },
-    down() {
-      
     }
   }
 }
@@ -93,7 +79,7 @@ export default {
   background-color: gray;
   z-index: 1000000;
   opacity: 0.3;
-  transition: all 0.5s ease-in;
+  transition: all 0.1s ease-in;
 }
 .prev:hover {
   opacity: 0.7;
@@ -107,7 +93,7 @@ export default {
   background-color: gray;
   z-index: 1000000;
   opacity: 0.3;
-  transition: all 0.5s ease-in;
+  transition: all 0.1s ease-in;
 }
 .down {
   position: absolute;
@@ -118,7 +104,7 @@ export default {
   background-color: gray;
   z-index: 1000000;
   opacity: 0.3;
-  transition: all 0.5s ease-in;
+  transition: all 0.1s ease-in;
 }
 .next:hover {
   opacity: 0.7;
@@ -135,10 +121,12 @@ export default {
   height: 100%;
     background-size: cover;
 }
+/*
 .slide-0 {
   background-image: url("https://upload.wikimedia.org/wikipedia/commons/3/35/Kiyomizu_Temple_-_01.jpg");
 }
-.slide-1 {
+*/
+.slide-0 {
   background-image: url("../assets/tabloid.jpg");
 }
 .header-title {
@@ -148,30 +136,22 @@ export default {
   top: 100px;
   left: 150px;
   z-index: 100;
+  font-family: 'mincho';
 }
 p {
   position: absolute;
   top: 200px;
   left: 150px;
   z-index: 100;
+  font-family: 'mincho';
 }
-.transition-slide-0-enter-active,
-.transition-slide-1-enter-active {
+.transition-slide-enter-active,
+.transition-slide-leave-active {
   transition: all 0.5s ease-in;
 }
-.transition-slide-0-enter-from,
-.transition-slide-1-enter-from {
-  left: 50%;
+.transition-slide-enter-from,
+.transition-slide-leave-to {
   opacity: 0;
-}
-.transition-slide-0-leave-active,
-.transition-slide-1-leave-active {
-  transition: all 0.5s ease-in;
-}
-.transition-slide-0-leave-to,
-.transition-slide-1-leave-to {
-  left: -50%;
-  opacity:0;
 }
 .ref-area {
   position: absolute;

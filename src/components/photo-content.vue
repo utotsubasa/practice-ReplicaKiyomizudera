@@ -134,5 +134,6 @@ export default {
 .transition-shadow-enter-from,
 .transition-shadow-leave-to {
   left: 30%;
+  width: 70%;
 }
 </style>

@@ -24,6 +24,7 @@ export default {
   margin: 0 auto;
   height: 100px;
   padding: 100px 0;
+  font-family: 'mincho';
 }
 .font-awesomes {
   text-align: center;

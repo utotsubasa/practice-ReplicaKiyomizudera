@@ -2,16 +2,16 @@
   <div class="container">
     <div class="heading">
       <div class="left-heading">
-        <heading-tag>
-          <template v-slot:default="slotProps">
-            <router-link :to="slotProps.item.to"><span class="heading-tag">{{slotProps.item.title}}</span></router-link>
-          </template>
-        </heading-tag>
+        <ul class="list">
+          <li class="tag" v-for="(text,index) in texts" :key="index" :class="{selected:$store.state.index==index}" @click="$store.commit('move',index)">{{text}}</li>
+        </ul>
       </div>
       <div class="right-heading">
-        The FEEL KIYOMIZUDERA project presents a new
-perspective and a fresh interpretation of prayer
-through a variety of experimental expressions beyond convention.
+        <span v-for="(text,index) in texts" :key="index" class="description">
+          <transition name="transition-text">
+            <p v-if="index==$store.state.index">{{text}}</p>
+          </transition>
+        </span>
       </div>
     </div>
     <div class="photos">
@@ -68,6 +68,13 @@ export default {
             to: "/project/799",
             url: require("../assets/garden.jpeg")
           }
+        ],
+        texts: [
+          "春",
+          "夏",
+          "秋(夜)",
+          "秋(昼)",
+          "冬"
         ]
       }
     },
@@ -89,21 +96,40 @@ export default {
   width: 100%;
   margin: 30px auto;
   height: 1500px;
+  font-family: 'mincho';
+}
+.list {
+  list-style: none;
+  float: left;
+  font-family: 'mincho';
+  font-size: 20px;
+}
+.tag {
+  float: left;
+  padding-right: 20px;
+  transition: all 0.5s ease-in;
 }
 .heading {
-  padding:50px 100px;
+  padding:20px 100px;
 }
 .heading-tag{
   display: inline-block;
   text-decoration: none;
   color:black;
   padding-right: 50px;
-  font-size: 10px;
+  font-size: 20px;
+  font-family: 'mincho';
+}
+.tag {
+  opacity: 0.5;
+  color: black;
 }
 .right-heading {
   float: right;
   width: 200px;
-  font-size: 10px;
+  font-size: 30px;
+  position: relative;
+  font-family: 'mincho';
 }
 .photos {
   padding-top: 150px;
@@ -112,5 +138,30 @@ export default {
 .options {
   margin-left: 100px;
   margin-bottom: 200px;
+}
+.description {
+  position: absolute;
+  top: 0;
+}
+.header-btn {
+  margin-right: 20px;
+}
+.selected {
+  color: blue;
+}
+.tag:hover {
+  opacity: 1;
+}
+.transition-text-enter-active,
+.transition-text-leave-active {
+  transition: all 0.5s ease-in;
+}
+.transition-text-enter-from {
+  transform: translateY(50px);
+  opacity: 0;
+}
+.transition-text-leave-to {
+  transform: translateY(-50px);
+  opacity: 0;
 }
 </style>

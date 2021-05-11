@@ -1,7 +1,7 @@
 <template>
   <ul class="list">
-    <li v-for="item in items" :key="item" class="tag">
-      <slot :item="item" class="slot"></slot>
+    <li v-for="tag in tags" :key="tag.id" class='tag'>
+      <span :class="[{selectedTag:$store.state.index==tag.id}]"><slot :tag="tag"></slot></span>
     </li>
   </ul>
 </template>
@@ -10,22 +10,18 @@
 export default {
   data() {
     return {
-      items: [
+      tags: [
         {
-          title: "PROJECT",
-          to: "/project"
+          name:"夏",
+          id:0
         },
         {
-          title: "ABOUT",
-          to: "/about"
+          name:"秋（夜）",
+          id:1
         },
         {
-          title: "INFOMATION",
-          to: "/info"
-        },
-        {
-          title: "TABLOID",
-          to: "/tabloid"
+          name:"秋（昼）",
+          id:2
         }
       ]
     }
@@ -39,18 +35,10 @@ export default {
   float: left;
 }
 .tag {
-  float: right;
+  float: left;
 }
-.heading-tag:hover {
-  color:gray;
-  cursor: pointer;
-}
-.heading-tag{
-  display: inline-block;
-  text-decoration: none;
-  color:black;
-  padding-right: 50px;
-  font-size: 10px;
-  transition: all 0.5s ease-in;
+.selected-tag {
+  opacity: 0.7;
+  color: blue;
 }
 </style>

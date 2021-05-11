@@ -46,6 +46,7 @@ export default {
   padding: 100px 0;
   background-color: ghostwhite;
   height: 850px;
+  font-family: 'mincho';
 }
 .about-heading {
   font-weight: 500;
