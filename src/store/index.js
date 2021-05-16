@@ -3,7 +3,8 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     index:0,
-    num: 5
+    num: 5,
+    intervalId: 0
   },
   getters: {
     returnColor: state => {
@@ -23,13 +24,24 @@ export default createStore({
     },
     move(state,i){
       state.index = i;
+    },
+    resetId(state) {
+      state.intervalId = 0;
     }
   },
   actions: {
     slide(context) {
-      setInterval(() => {
+      context.state.intervalId=setInterval(() => {
         context.commit('next')
       },5000)
+    },
+    restart(context) {() => {
+      clearInterval(context.state.intervalId);
+      context.commit('resetId');
+      context.state.intervalId=setInterval(() => {
+        context.commit('next')
+      },5000)
+    }
     }
   },
   modules: {

@@ -1,9 +1,8 @@
 <template>
   <div class="container">
     <span class="top-btn-area">
-        <sapn class="prev" v-on:click="$store.commit('prev')"></sapn>
+        <sapn class="prev" v-on:click="clickLeft()"></sapn>
         <span class="next" v-on:click="$store.commit('next')"></span>
-        <span class="down" v-on:click="down"></span>
     </span>
     <transition name="transition-title">
     <div class="title-area" :style="{color: $store.getters.returnColor}">
@@ -25,6 +24,50 @@
         <a href="#" class="ref">{{$store.state.index}} ------></a>
       </transition>
     </div>
+    <div class="slider-btns-area">
+      <div class="slider-btn-area area0">
+        <button class="slide-btn" v-if="$store.state.index!=0"></button>
+        <span class="timer" v-if="$store.state.index==0"></span>
+      </div>
+      <div class="slider-btn-area area1">
+        <button class="slide-btn" v-if="$store.state.index!=1"></button>
+        <span class="timer" v-if="$store.state.index==1"></span>
+      </div>
+      <div class="slider-btn-area area2">
+        <button class="slide-btn" v-if="$store.state.index!=2"></button>
+        <span class="timer" v-if="$store.state.index==2"></span>
+      </div>
+      <div class="slider-btn-area area3">
+        <button class="slide-btn" v-if="$store.state.index!=3"></button>
+        <span class="timer" v-if="$store.state.index==3"></span>
+      </div>
+      <div class="slider-btn-area area4">
+        <button class="slide-btn" v-if="$store.state.index!=4"></button>
+        <span class="timer" v-if="$store.state.index==4"></span>
+      </div>
+    </div>
+    <span class="slide-btn-area">
+      <span class="btn-area">
+        <button class="slide-btn btn-l" v-if="$store.state.index!=0">0</button>
+        <span class="timer timer-l" v-if="$store.state.index==0"></span>
+      </span>
+      <span>
+        <button class="slide-btn btn-m" v-if="$store.state.index!=1">1</button>
+        <span class="timer timer-m" v-if="$store.state.index==1"></span>
+      </span>
+      <span>
+        <button class="slide-btn btn-m" v-if="$store.state.index!=2">2</button>
+        <span class="timer timer-m" v-if="$store.state.index==2"></span>
+      </span>
+      <span>
+        <button class="slide-btn btn-m" v-if="$store.state.index!=3">3</button>
+        <span class="timer timer-m" v-if="$store.state.index==3"></span>
+      </span>
+      <span>
+        <button class="slide-btn btn-r" v-if="$store.state.index!=4">4</button>
+        <span class="timer timer-r" v-if="$store.state.index==4"></span>
+      </span>
+    </span>
   </div>
 </template>
 
@@ -42,7 +85,7 @@ export default {
       ]
     }
   },
-  mounted() {    
+  created() {    
     /*
     setInterval(() => {
       this.$store.commit('next') //うまくいかないのなんで
@@ -167,5 +210,111 @@ p {
 }
 .ref:hover {
   opacity: 0.7;
+}
+.slide-btn-area {
+  bottom: 40px;
+  display: inline-block;
+  width: 300px;
+  position: absolute;
+  z-index: 1000000;
+  cursor: pointer;
+  text-align: center;
+  vertical-align: middle;
+}
+.slider-btns-area {
+  position: absolute;
+  background-color: red;
+  width: 300px;
+  height: 30px;
+  z-index: 1000000000;
+  bottom: 40px;
+  left: 50px;
+}
+.slider-btn-area {
+  float: left;
+  width: 20%;
+  height: 100%;
+  padding: 0 auto;
+  position: relative;
+}
+.area0 {
+  background-color: red;
+}
+.area1 {
+  background-color: blue;
+}
+.area2 {
+  background-color: yellow;
+}
+.area3 {
+  background-color: green;
+}
+.area4 {
+  background-color: pink;
+
+}
+.btn0-area {
+  position: absolute;
+  width: 20%;
+}
+.slide-btn {
+  padding: 6px;
+  color: white;
+  border-radius: 50%;
+  border: 0;
+  color: black;
+  float: left;
+  position: absolute;
+  cursor: pointer;
+  top: 9px;
+  left: 9px;
+}
+.btn0-area {
+  position:relative;
+  width: 50px;
+}
+.timer {
+  padding: 17px;
+  background-color: white;
+  border-radius: 50%;
+  position: absolute;
+  display: inline-block;
+  background-image: linear-gradient(
+    to right,
+    transparent 50%,
+    black 0
+  );
+  overflow: hidden;
+}
+.timer::before {
+  content: "";
+  display: block;
+  margin-left: 0;
+  height: 100%;
+  width: 50%;
+  top: 0;
+  position: absolute;
+      border-radius: 0 100% 100% 0 / 50%;
+    background-color: inherit;
+    transform-origin: left;
+  animation: timer 5s linear;
+}
+@keyframes timer {
+  0% {
+    transform: rotate(0deg);
+    background-color: white;
+  }
+  50% {
+    transform: rotate(180deg);
+    background-color: white;
+  }
+  50.001% {
+    transform: rotate(0deg);
+    background-color: black;
+  }
+  100% {
+    transform: rotate(180deg);
+    background-color: black;
+  }
 }
 </style>
