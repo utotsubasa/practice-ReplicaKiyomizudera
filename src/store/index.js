@@ -3,8 +3,7 @@ import { createStore } from 'vuex'
 export default createStore({
   state: {
     index:0,
-    num: 5,
-    intervalId: 0
+    num: 5
   },
   getters: {
     returnColor: state => {
@@ -37,10 +36,7 @@ export default createStore({
     },
     restart(context) {() => {
       clearInterval(context.state.intervalId);
-      context.commit('resetId');
-      context.state.intervalId=setInterval(() => {
-        context.commit('next')
-      },5000)
+      setInterval(context.state.intervalId);
     }
     }
   },

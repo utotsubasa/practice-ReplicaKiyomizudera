@@ -1,73 +1,55 @@
 <template>
-  <div class="container">
-    <span class="top-btn-area">
-        <sapn class="prev" v-on:click="clickLeft()"></sapn>
-        <span class="next" v-on:click="$store.commit('next')"></span>
-    </span>
+  <div class="container" @mousemove="getCoordinate">
+    <div class="top-header" :style="[styleTopHeader,{color:headerFontColor}]">
+      <p>FEEL_KIYOMIZUDERA</p>
+    </div>
+    <div class="top-btn-area" @mousemove="showCursorArea=false" @mouseleave="showCursorArea=true">
+        <div class="prev" v-on:click="clickLeft()"><span class="arrow arrow-left"></span></div>
+        <div class="next" v-on:click="clickRight()"><span class="arrow arrow-right"></span></div>
+    </div>
     <transition name="transition-title">
-    <div class="title-area" :style="{color: $store.getters.returnColor}">
+    <div class="title-area" :style="{color: fontColor}">
       <h1 class="header-title">FEEL_KIYOMIZUDERA</h1>
-      <p>
+      <p class="header-subtitle">
         From now on, Kiyomizu-dera will seek ...
       </p>
     </div>
     </transition>
     <div id="slides">
-      <div v-for="(url,index) in urls" :key="index">
-        <transition name="transition-slide">
-          <div class="slide" v-if="$store.state.index==index" :style="{backgroundImage:url}"></div>
+      <div v-for="(url,id) in urls" :key="id">
+        <transition name="transition-slide" mode="out-in">
+          <div class="slide" v-if="id==index" :style="{backgroundImage:url}"></div>
         </transition>
       </div>
     </div>
     <div class="ref-area">
       <transition name="transition-ref">
-        <a href="#" class="ref">{{$store.state.index}} ------></a>
+        <a href="#" class="ref">{{index}} ------></a>
       </transition>
     </div>
-    <div class="slider-btns-area">
+    <div class="slider-btns-area" @mousemove="showCursorArea=false" @mouseleave="showCursorArea=true">
       <div class="slider-btn-area area0">
-        <button class="slide-btn" v-if="$store.state.index!=0"></button>
-        <span class="timer" v-if="$store.state.index==0"></span>
+        <button class="slide-btn" v-if="index!=0" @click="switchTo(0)"></button>
+        <span class="timer" v-if="index==0"></span>
       </div>
       <div class="slider-btn-area area1">
-        <button class="slide-btn" v-if="$store.state.index!=1"></button>
-        <span class="timer" v-if="$store.state.index==1"></span>
+        <button class="slide-btn" v-if="index!=1" @click="switchTo(1)"></button>
+        <span class="timer" v-if="index==1"></span>
       </div>
       <div class="slider-btn-area area2">
-        <button class="slide-btn" v-if="$store.state.index!=2"></button>
-        <span class="timer" v-if="$store.state.index==2"></span>
+        <button class="slide-btn" v-if="index!=2" @click="switchTo(2)"></button>
+        <span class="timer" v-if="index==2"></span>
       </div>
       <div class="slider-btn-area area3">
-        <button class="slide-btn" v-if="$store.state.index!=3"></button>
-        <span class="timer" v-if="$store.state.index==3"></span>
+        <button class="slide-btn" v-if="index!=3" @click="switchTo(3)"></button>
+        <span class="timer" v-if="index==3"></span>
       </div>
       <div class="slider-btn-area area4">
-        <button class="slide-btn" v-if="$store.state.index!=4"></button>
-        <span class="timer" v-if="$store.state.index==4"></span>
+        <button class="slide-btn" v-if="index!=4" @click="switchTo(4)"></button>
+        <span class="timer" v-if="index==4"></span>
       </div>
     </div>
-    <span class="slide-btn-area">
-      <span class="btn-area">
-        <button class="slide-btn btn-l" v-if="$store.state.index!=0">0</button>
-        <span class="timer timer-l" v-if="$store.state.index==0"></span>
-      </span>
-      <span>
-        <button class="slide-btn btn-m" v-if="$store.state.index!=1">1</button>
-        <span class="timer timer-m" v-if="$store.state.index==1"></span>
-      </span>
-      <span>
-        <button class="slide-btn btn-m" v-if="$store.state.index!=2">2</button>
-        <span class="timer timer-m" v-if="$store.state.index==2"></span>
-      </span>
-      <span>
-        <button class="slide-btn btn-m" v-if="$store.state.index!=3">3</button>
-        <span class="timer timer-m" v-if="$store.state.index==3"></span>
-      </span>
-      <span>
-        <button class="slide-btn btn-r" v-if="$store.state.index!=4">4</button>
-        <span class="timer timer-r" v-if="$store.state.index==4"></span>
-      </span>
-    </span>
+    <div class="cursor-area" :style="styleCursor" v-if="showCursorArea"></div>
   </div>
 </template>
 
@@ -82,7 +64,22 @@ export default {
         'url('+'https://upload.wikimedia.org/wikipedia/commons/6/6b/Kiyomizu-dera-2a.jpg'+')',
         'url('+'https://upload.wikimedia.org/wikipedia/commons/4/42/Kiyomizu-dera_in_Kyoto-r.jpg'+')',
         'url('+'http://kyotomoyou.jp/sys/wp-content/uploads/2015/01/kiyomizudera-yuki-201501.jpg'+')'
-      ]
+      ],
+      index: 0,
+      intervalId:0,
+      scrolled: false,
+      styleTopHeader: {
+        backgroundColor: "rgba(255,255,255,0)"
+      },
+      styleCursor: {
+        top: 0,
+        left: 0,
+        backgroundColor: "black",
+        opacity: 1
+      },
+      cursorX: 0,
+      cursorY: 0,
+      showCursorArea: true
     }
   },
   created() {    
@@ -91,17 +88,91 @@ export default {
       this.$store.commit('next') //うまくいかないのなんで
     }, 5000)
     */
-    this.$store.dispatch('slide')
+    this.intervalId=setInterval(() => {
+      this.index = (this.index + 1)%5
+    },5000)
+    window.addEventListener("scroll",this.changeHeaderColor)
+    window.addEventListener("scroll",this.getCoordinate)
   },
   computed: {
     returnText() {
-      if (this.$store.state.index === 0) {
+      if (this.index === 0) {
         return "day"
-      } else if (this.$store.state.index === 1) {
+      } else if (this.index === 1) {
         return "night"
       } else {
         return "hoge"
       }
+    },
+    fontColor() {
+      if(this.index === 2) {
+        return "white"
+      } else {
+        return "black"
+      }
+    },
+    headerFontColor() {
+      if(!this.scrolled && this.index === 2) {
+        return "white"
+      } else {
+        return "black"
+      }
+    }
+  },
+  watch: {
+    cursorX(val) {
+      this.styleCursor.left = val -15 + "px";
+      if(val<300) {
+        this.styleCursor.backgroundColor = "red";
+      } else if(val>1440-300) {
+        this.styleCursor.backgroundColor = "blue";
+      } else {
+        this.styleCursor.backgroundColor = "yellow";
+      }
+    },
+    cursorY(val) {
+      this.styleCursor.top = val -15 + "px";
+      if(val<750) {
+        this.styleCursor.opacity = 1;
+      } else {
+        this.styleCursor.opacity = 0;
+      }
+    }
+  },
+  methods: {
+    clickLeft() {
+      this.index = (this.index -1 + 5)%5
+      clearInterval(this.intervalId);
+      this.intervalId = setInterval(() => {
+        this.index = (this.index + 1)%5
+      },5000)
+    },
+    clickRight() {
+      this.index = (this.index + 1)%5
+      clearInterval(this.intervalId);
+      this.intervalId = setInterval(() => {
+        this.index = (this.index + 1)%5
+      },5000)
+    },
+    switchTo(num) {
+      this.index=num
+      clearInterval(this.intervalId)
+      this.intervalId = setInterval(() => {
+        this.index = (this.index + 1)%5
+      },5000)
+    },
+    changeHeaderColor() {
+      if (window.scrollY>10) {
+        this.scrolled = true;
+        this.styleTopHeader.backgroundColor = "white";
+      } else {
+        this.scrolled = false;
+        this.styleTopHeader.backgroundColor = "rgba(255,255,255,0)";
+      }
+    },
+    getCoordinate(event) {
+      this.cursorY = event.clientY +window.scrollY;
+      this.cursorX = event.clientX;
     }
   }
 }
@@ -113,30 +184,88 @@ export default {
   padding: 0;
   height: 789px;
 }
+.top-header {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  height: 50px;
+  z-index: 100000000000;
+  text-align: center;
+  vertical-align: middle;
+  font-size: 20px;
+  font-family: "mincho";
+  transition: all 0.3s ease-in;
+}
 .prev {
   position: absolute;
-  top: 0;
-  left: 0;
-  height: 100%;
-  width: 30px;
-  background-color: gray;
+  display: inline-block;
+  top: 48%;
+  left: 20px;
+  height: 60px;
+  width: 60px;
+  background-color: rgba(255,255,255,0);
   z-index: 1000000;
-  opacity: 0.3;
+  border-radius: 50%;
+  border: 10px solid black;
+  opacity: 1;
   transition: all 0.1s ease-in;
-}
-.prev:hover {
-  opacity: 0.7;
 }
 .next {
   position: absolute;
-  top: 0;
-  right: 0;
-  height: 100%;
-  width: 30px;
-  background-color: gray;
+  display: inline-block;
+  top: 48%;
+  right: 20px;
+  height: 60px;
+  width: 60px;
+  background-color: rgba(255,255,255,0);
   z-index: 1000000;
-  opacity: 0.3;
+  border-radius: 50%;
+  border: 10px solid black;
+  opacity: 1;
   transition: all 0.1s ease-in;
+}
+.arrow-right {
+  width: 0;
+  height: 0;
+  top: 10px;
+  left: 8px;
+  border-left: 30px solid black;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  position: absolute;
+  z-index: 100000000000;
+  animation: rightArrow 0.5s infinite linear;
+}
+.arrow-left {
+  width: 0;
+  height: 0;
+  top: 10px;
+  right: 8px;
+  border-right: 30px solid black;
+  border-top: 20px solid transparent;
+  border-bottom: 20px solid transparent;
+  position: absolute;
+  z-index: 100000000000;
+  animation: leftArrow 0.5s infinite linear;
+}
+@keyframes rightArrow {
+  60% {
+    left: 30px;
+  }
+  100% {
+    left: 30px;
+  }
+}
+@keyframes leftArrow {
+  60% {
+    right: 30px;
+  }
+  100% {
+    right: 30px;
+  }
+}
+.prev:hover {
+  opacity: 0.7;
 }
 .down {
   position: absolute;
@@ -155,6 +284,11 @@ export default {
 .down:hover {
   opacity: 0.7;
 }
+#slides {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
 .slide {
   overflow: hidden;
   position:absolute;
@@ -162,7 +296,8 @@ export default {
   left:0;
   width: 100%;
   height: 100%;
-    background-size: cover;
+  background-size: cover;
+  transition: all 1s ease-in;
 }
 /*
 .slide-0 {
@@ -181,7 +316,7 @@ export default {
   z-index: 100;
   font-family: 'mincho';
 }
-p {
+.header-subtitle {
   position: absolute;
   top: 200px;
   left: 150px;
@@ -190,9 +325,17 @@ p {
 }
 .transition-slide-enter-active,
 .transition-slide-leave-active {
-  transition: all 0.5s ease-in;
+  transition: all 0.5s linear;
 }
-.transition-slide-enter-from,
+.transition-slide-enter-from {
+  left: 100%;
+}
+.transition-slide-enter-to {
+  left: 0;
+}
+.transition-slide-leave-from {
+  opacity: 1;
+}
 .transition-slide-leave-to {
   opacity: 0;
 }
@@ -223,12 +366,12 @@ p {
 }
 .slider-btns-area {
   position: absolute;
-  background-color: red;
   width: 300px;
   height: 30px;
-  z-index: 1000000000;
+  z-index: 1000;
   bottom: 40px;
   left: 50px;
+
 }
 .slider-btn-area {
   float: left;
@@ -236,22 +379,6 @@ p {
   height: 100%;
   padding: 0 auto;
   position: relative;
-}
-.area0 {
-  background-color: red;
-}
-.area1 {
-  background-color: blue;
-}
-.area2 {
-  background-color: yellow;
-}
-.area3 {
-  background-color: green;
-}
-.area4 {
-  background-color: pink;
-
 }
 .btn0-area {
   position: absolute;
@@ -294,9 +421,9 @@ p {
   width: 50%;
   top: 0;
   position: absolute;
-      border-radius: 0 100% 100% 0 / 50%;
-    background-color: inherit;
-    transform-origin: left;
+  border-radius: 0 100% 100% 0 / 50%;
+  background-color: inherit;
+  transform-origin: left;
   animation: timer 5s linear;
 }
 @keyframes timer {
@@ -316,5 +443,12 @@ p {
     transform: rotate(180deg);
     background-color: black;
   }
+}
+.cursor-area {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  z-index: 100;
 }
 </style>

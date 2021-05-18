@@ -7,11 +7,27 @@
         </ul>
       </div>
       <div class="right-heading">
-        <span v-for="(text,index) in texts" :key="index" class="description">
-          <transition name="transition-text">
-            <p v-if="index==$store.state.index">{{text}}</p>
-          </transition>
-        </span>
+      </div>
+    </div>
+    <div class="header-photo-switch-area">
+      <div class="header-photo-switch switch-left" @click="switchToLeft()" :style="styleButtonLeft"><span class="icon-left"></span></div>
+      <div class="header-photo-switch switch-right" @click="switchToRight()" :style="styleButtonRight"><span class="icon-right"></span></div>
+    </div>
+    <div class="header-photo-garary" :style="styleHeaderPhotos">
+      <div class="header-photo-area">
+        <div class="header-photo photo-0"><span class="shadow"></span></div>
+      </div>
+      <div class="header-photo-area">
+        <div class="header-photo photo-1"><span class="shadow"></span></div>
+      </div>
+      <div class="header-photo-area">
+        <div class="header-photo photo-2"><span class="shadow"></span></div>
+      </div>
+      <div class="header-photo-area">
+        <div class="header-photo photo-3"><span class="shadow"></span></div>
+      </div>
+      <div class="header-photo-area">
+        <div class="header-photo photo-4"><span class="shadow"></span></div>
       </div>
     </div>
     <div class="photos">
@@ -27,7 +43,7 @@
 </template>
 
 <script>
-import headingTag from '../components/heading-tag.vue'
+//import headingTag from '../components/heading-tag.vue'
 import photoContent from '../components/photo-content.vue'
 import myButton from '../components/button.vue'
 export default {
@@ -75,16 +91,53 @@ export default {
           "秋(夜)",
           "秋(昼)",
           "冬"
-        ]
+        ],
+        index: 0,
+        styleHeaderPhotos: {
+          left: 0 + "px",
+          transition: "all " + 0.5 +"s " + "linear"
+        },
+        styleButtonLeft: {
+          opacity: 0.5
+        },
+        styleButtonRight: {
+          opacity: 1
+        }
       }
     },
     methods: {
     goProject () {
       this.$router.push({ path: 'project' });
+    },
+    switchToRight() {
+      if (this.index === 2) return;
+      else {
+        if(this.index === 0){
+          this.styleButtonLeft.opacity = 1;
+          this.styleHeaderPhotos.left = -400 + "px";
+        }else if(this.index === 1){
+          this.styleButtonRight.opacity = 0.5;
+          this.styleHeaderPhotos.transition = "all " + 0.2 + "s " + "linear";
+          this.styleHeaderPhotos.left = -560 + "px";
+        }
+        this.index += 1;
+      }
+    },
+    switchToLeft() {
+      if (this.index === 0) return;
+      else if (this.index === 1) {
+        this.styleButtonLeft.opacity = 0.5;
+        this.styleHeaderPhotos.transition = "all " + 0.5 + "s " + "linear";
+        this.styleHeaderPhotos.left = 0 + "px";
+        this.index -= 1;
+      } else if (this.index === 2) {
+        this.styleButtonRight.opacity = 1;
+        this.styleHeaderPhotos.left = -400 + "px";
+        this.index -= 1;
+      }
     }
   },
   components: {
-    headingTag,
     photoContent,
     myButton
   }
@@ -97,6 +150,107 @@ export default {
   margin: 30px auto;
   height: 1500px;
   font-family: 'mincho';
+  overflow: hidden;
+  position: relative;
+}
+.header-photo-switch-area {
+  position: absolute;
+  top: 100px;
+  right: 10px;
+  height: 30px;
+  width: 80px;
+  background-color: rgba(0,0,0,0.1);
+  z-index: 100000000000000;
+}
+.header-photo-switch {
+  float: left;
+  width: 30px;
+  height: 30px;
+  position: relative;
+  cursor: pointer;
+}
+.switch-left {
+  margin-right: 20px;
+}
+.icon-left {
+  position: absolute;
+  display: block;
+  left: 10px;
+  top: 5px;
+  width: 15px;
+  height: 15px;
+  border-top: 5px solid black;
+  border-right: 5px solid black;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(-135deg);
+}
+.icon-right {
+  position: absolute;
+  display: block;
+  left: 0;
+  top: 5px;
+  width: 15px;
+  height: 15px;
+  border-top: 5px solid black;
+  border-right: 5px solid black;
+  -webkit-transform: rotate(45deg);
+  transform: rotate(45deg);
+}
+.header-photo-garary {
+  margin-top: 100px;
+  margin-bottom: 100px;
+  width: 5000px;
+  height: 300px;
+  position: absolute;
+}
+.header-photo-area {
+  height: 300px;
+  width: 400px;
+  float: left;
+  position: relative;
+  transition: all 0.3s ease-in;
+  overflow: hidden;
+}
+.header-photo {
+  height: 280px;
+  width: 380px;
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  background-size: cover;
+  transition: all 0.3s ease-in;
+}
+.header-photo:hover {
+  height: 110%;
+  width: 110%;
+  top: -5%;
+  left: -5%;
+  right: 5%;
+  bottom: 5%;
+}
+.shadow {
+  position:absolute;
+  height: 100%;
+  width: 100%;
+  transition: all 0.3s ease-in;
+}
+.header-photo:hover .shadow {
+  background-color: rgba(0,0,0,0.5);
+}
+.photo-0 {
+  background-image: url("../assets/flowers.jpeg");
+}
+.photo-1 {
+  background-image: url("../assets/moon.jpeg");
+}
+.photo-2 {
+  background-image: url("../assets/lightup.jpeg");
+}
+.photo-3 {
+  background-image: url("../assets/forest.jpeg");
+}
+.photo-4 {
+  background-image: url("../assets/garden.jpeg");
 }
 .list {
   list-style: none;
@@ -132,8 +286,9 @@ export default {
   font-family: 'mincho';
 }
 .photos {
-  padding-top: 150px;
+  padding-top: 250px;
   padding-bottom: 80px;
+  top: 500px;
 }
 .options {
   margin-left: 100px;
