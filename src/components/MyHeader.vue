@@ -49,7 +49,7 @@
         <span class="timer" v-if="index==4"></span>
       </div>
     </div>
-    <div class="cursor-area" :style="styleCursor" v-if="showCursorArea"></div>
+    <div class="cursor-area" :style="[styleCursor,styleCursorComputed]" v-if="showCursorArea" @click="click"></div>
   </div>
 </template>
 
@@ -74,12 +74,35 @@ export default {
       styleCursor: {
         top: 0,
         left: 0,
-        backgroundColor: "black",
-        opacity: 1
+        position: "absolute",
+        opacity: 0,
+        zIndex: 100
       },
       cursorX: 0,
       cursorY: 0,
-      showCursorArea: true
+      showCursorArea: true,
+      styleCursorLeft: {
+        width: 25+"px",
+        height: 25+"px",
+        borderTop: 10+"px solid black",
+        borderRight: 10+"px solid black",
+        transform: "rotate(-135deg)"
+      },
+      styleCursorCenter: {
+        width: 30+"px",
+        height: 30+"px",
+        borderRadius: 50+"%",
+        backgroundColor: "yellow"
+      },
+      styleCursorRight: {
+        width: 25+"px",
+        height: 25+"px",
+        borderTop: 10+"px solid black",
+        borderRight: 10+"px solid black",
+        transform: "rotate(45deg)"
+      },
+      cursorPosition: "center",
+      click: 0
     }
   },
   created() {    
@@ -117,17 +140,26 @@ export default {
       } else {
         return "black"
       }
+    },
+    styleCursorComputed() {
+      if(this.cursorPosition=="center"){
+        return this.styleCursorCenter;
+      }else if(this.cursorPosition=="left"){
+        return this.styleCursorLeft;
+      }else{
+        return this.styleCursorRight;
+      }
     }
   },
   watch: {
     cursorX(val) {
       this.styleCursor.left = val -15 + "px";
       if(val<300) {
-        this.styleCursor.backgroundColor = "red";
+        this.cursorPosition = "left";
       } else if(val>1440-300) {
-        this.styleCursor.backgroundColor = "blue";
+        this.cursorPosition = "right";
       } else {
-        this.styleCursor.backgroundColor = "yellow";
+        this.cursorPosition = "center";
       }
     },
     cursorY(val) {
@@ -136,6 +168,15 @@ export default {
         this.styleCursor.opacity = 1;
       } else {
         this.styleCursor.opacity = 0;
+      }
+    },
+    cursorPosition(val) {
+      if(val=="left"){
+        this.click = this.clickLeft;
+      } else if(val=="center"){
+        this.click = this.clickCenter;
+      } else if(val=="right"){
+        this.click = this.clickRight;
       }
     }
   },
@@ -153,6 +194,9 @@ export default {
       this.intervalId = setInterval(() => {
         this.index = (this.index + 1)%5
       },5000)
+    },
+    clickCenter() {
+      return ;
     },
     switchTo(num) {
       this.index=num
@@ -444,6 +488,7 @@ export default {
     background-color: black;
   }
 }
+/*
 .cursor-area {
   position: absolute;
   width: 30px;
@@ -451,4 +496,5 @@ export default {
   border-radius: 50%;
   z-index: 100;
 }
+*/
 </style>

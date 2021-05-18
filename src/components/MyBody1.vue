@@ -3,7 +3,7 @@
     <div class="heading">
       <div class="left-heading">
         <ul class="list">
-          <li class="tag" v-for="(text,index) in texts" :key="index" :class="{selected:$store.state.index==index}" @click="$store.commit('move',index)">{{text}}</li>
+          <li class="tag" v-for="(text,index) in texts" :key="index" :class="{selected:$store.state.index==index}" @click="$store.commit('move',index)"></li>
         </ul>
       </div>
       <div class="right-heading">
