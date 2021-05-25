@@ -32,7 +32,7 @@
     </transition>
     <div id="slides">
       <div v-for="(url,id) in urls" :key="id">
-        <transition name="transition-slide" mode="out-in">
+        <transition :name="transitionSlide" mode="out-in">
           <div class="slide" v-if="id==index" :style="{backgroundImage:url}"></div>
         </transition>
       </div>
@@ -83,6 +83,8 @@ export default {
       ],
       index: 0,
       intervalId:0,
+      leftClicked:false,
+      transitionSlide: "transition-slide-next",
       scrolled: false,
       styleTopHeader: {
         backgroundColor: "rgba(255,255,255,0)"
@@ -195,11 +197,26 @@ export default {
       } else if(val=="right"){
         this.click = this.clickRight;
       }
+    },
+    index(newVal,oldVal){
+      if(newVal==0&&oldVal==4&&(!this.leftClicked)){
+        this.transitionSlide = "transition-slide-next"
+      } else if(newVal>oldVal) {
+        this.transitionSlide = "transition-slide-next"
+        this.leftClicked = false;
+      } else if(newVal<oldVal) {
+        this.transitionSlide = "transition-slide-prev"
+        this.leftClicked = false;
+      } else if(newVal==4&&oldVal==0){
+        this.transitionSlide = "transition-slide-prev"
+      }
     }
   },
   methods: {
     clickLeft() {
-      this.index = (this.index -1 + 5)%5
+      this.leftClicked = true;
+      this.transitionSlide = "transition-slide-prev";
+      this.index = (this.index -1 + 5)%5;
       clearInterval(this.intervalId);
       this.intervalId = setInterval(() => {
         this.index = (this.index + 1)%5
@@ -459,21 +476,35 @@ export default {
   z-index: 10;
   font-family: 'mincho';
 }
-.transition-slide-enter-active,
-.transition-slide-leave-active {
+.transition-slide-next-enter-active,
+.transition-slide-next-leave-active,
+.transition-slide-prev-enter-active,
+.transition-slide-prev-leave-active {
   transition: all 0.5s linear;
 }
-.transition-slide-enter-from {
+.transition-slide-next-enter-from {
   left: 100%;
 }
-.transition-slide-enter-to {
+.transition-slide-next-enter-to {
   left: 0;
 }
-.transition-slide-leave-from {
+.transition-slide-next-leave-from {
   opacity: 1;
 }
-.transition-slide-leave-to {
+.transition-slide-next-leave-to {
   opacity: 0;
+}
+.transition-slide-prev-enter-from {
+  opacity: 0;
+}
+.transition-slide-prev-enter-to {
+  opacity: 1;
+}
+.transition-slide-prev-leave-from {
+  left: 0;
+}
+.transition-slide-prev-leave-to {
+  left: 100%;
 }
 .ref-area {
   position: absolute;
