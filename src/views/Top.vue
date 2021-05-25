@@ -1,9 +1,10 @@
 <template>
   <div id="app">
-    <myheader></myheader>
+    <myheader @displayShadow="showShadow=true" @deleteShadow="showShadow=false" ref="myheader"></myheader>
     <mybody1></mybody1>
     <mybody2></mybody2>
     <myfooter></myfooter>
+    <div class="fade" @click="hideShadow" v-show="showShadow"></div>
   </div>
 </template>
 
@@ -20,6 +21,17 @@ export default {
     mybody1,
     mybody2,
     myfooter,
+  },
+  data() {
+    return {
+      showShadow:false
+    }
+  },
+  methods: {
+    hideShadow() {
+      this.showShadow=false;
+      this.$refs.myheader.hideMenu();
+    }
   }
 }
 
@@ -36,5 +48,15 @@ export default {
   color: #2c3e50;
   margin: 0;
   width: 100%;
+}
+.fade {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: black;
+  opacity: 0.3;
+  z-index : 5000;
 }
 </style>

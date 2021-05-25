@@ -160,7 +160,7 @@ export default {
   height: 30px;
   width: 80px;
   background-color: rgba(0,0,0,0.1);
-  z-index: 100000000000000;
+  z-index: 10;
 }
 .header-photo-switch {
   float: left;

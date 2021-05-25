@@ -1,8 +1,23 @@
 <template>
   <div class="container" @mousemove="getCoordinate">
     <div class="top-header" :style="[styleTopHeader,{color:headerFontColor}]">
-      <p>FEEL_KIYOMIZUDERA</p>
+      <div class="menu-btn-area">
+        <p>FEEL_KIYOMIZUDERA</p>
+        <div class="menu-btn" @mousemove="showCursorArea=false" @mouseleave="showCursorArea=true" @click="clickMenu">
+          <div class="menu-btn-back">
+            <div class="line-top line"></div>
+            <div class="line-center line"></div>
+            <div class="line-bottom line"></div>
+          </div>
+        </div>
+      </div>
     </div>
+    <div class="menu-area" v-if="showMenu">
+          <div class="cancel-btn-area" @click="fadeShadow">
+            <div class="cross-1 cross"></div>
+            <div class="cross-2 cross"></div>
+          </div>
+        </div>
     <div class="top-btn-area" @mousemove="showCursorArea=false" @mouseleave="showCursorArea=true">
         <div class="prev" v-on:click="clickLeft()"><span class="arrow arrow-left"></span></div>
         <div class="next" v-on:click="clickRight()"><span class="arrow arrow-right"></span></div>
@@ -50,6 +65,7 @@
       </div>
     </div>
     <div class="cursor-area" :style="[styleCursor,styleCursorComputed]" v-if="showCursorArea" @click="click"></div>
+    <div class="fade-layer" v-if="showMenu"></div>
   </div>
 </template>
 
@@ -71,12 +87,13 @@ export default {
       styleTopHeader: {
         backgroundColor: "rgba(255,255,255,0)"
       },
+      showMenu: false,
       styleCursor: {
         top: 0,
         left: 0,
         position: "absolute",
         opacity: 0,
-        zIndex: 100
+        zIndex: 5
       },
       cursorX: 0,
       cursorY: 0,
@@ -217,6 +234,17 @@ export default {
     getCoordinate(event) {
       this.cursorY = event.clientY +window.scrollY;
       this.cursorX = event.clientX;
+    },
+    clickMenu() {
+      this.showMenu=true;
+      this.$emit('displayShadow');
+    },
+    hideMenu() {
+      this.showMenu = false;
+    },
+    fadeShadow() {
+      this.showMenu=false;
+      this.$emit('deleteShadow');
     }
   }
 }
@@ -233,12 +261,87 @@ export default {
   top: 0;
   width: 100%;
   height: 50px;
-  z-index: 100000000000;
+  z-index: 100;
   text-align: center;
   vertical-align: middle;
   font-size: 20px;
   font-family: "mincho";
   transition: all 0.3s ease-in;
+}
+.menu-btn-area {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  border: 1px black solid;
+}
+.menu-btn {
+  position: absolute;
+  top: 5px;
+  right: 50px;
+  width: 30px;
+  bottom: 5px;
+  display: inline-block;
+  border: 1px black solid;
+  cursor: pointer;
+}
+.menu-btn-back {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+.menu-area {
+  position: fixed;
+  top: 25px;
+  height: 500px;
+  width: 200px;
+  right: 10px;
+  border: 5px black solid;
+  background-color: white;
+  z-index: 10000;
+  opacity: 1;
+}
+.cancel-btn-area {
+  height: 30px;
+  width: 30px;
+  margin-top: 10px;
+  border: 1px black solid;
+  margin-right: 10px;
+  float:right;
+  position: relative;
+  transition: all 0.3s ease-in;
+  cursor: pointer;
+}
+.cancel-btn-area:hover {
+  background-color: rgba(0,0,0,0.3);
+}
+.cross {
+  position:absolute;
+  top: 50%;
+  height: 1px;
+  width: 100%;
+  background-color: black;
+}
+.cross-1 {
+  transform: rotate(45deg);
+}
+.cross-2 {
+  transform: rotate(-45deg);
+}
+.line {
+  position: absolute;
+  right: 2px;
+  left: 2px;
+  height: 2px;
+  background-color: black;
+}
+.line-top {
+  top: 24%;
+}
+.line-center {
+  top: 49%;
+}
+.line-bottom {
+  top: 74%;
 }
 .prev {
   position: absolute;
@@ -248,7 +351,7 @@ export default {
   height: 60px;
   width: 60px;
   background-color: rgba(255,255,255,0);
-  z-index: 1000000;
+  z-index: 10;
   border-radius: 50%;
   border: 10px solid black;
   opacity: 1;
@@ -262,7 +365,7 @@ export default {
   height: 60px;
   width: 60px;
   background-color: rgba(255,255,255,0);
-  z-index: 1000000;
+  z-index: 10;
   border-radius: 50%;
   border: 10px solid black;
   opacity: 1;
@@ -277,7 +380,7 @@ export default {
   border-top: 20px solid transparent;
   border-bottom: 20px solid transparent;
   position: absolute;
-  z-index: 100000000000;
+  z-index: 10;
   animation: rightArrow 0.5s infinite linear;
 }
 .arrow-left {
@@ -289,7 +392,7 @@ export default {
   border-top: 20px solid transparent;
   border-bottom: 20px solid transparent;
   position: absolute;
-  z-index: 100000000000;
+  z-index: 10;
   animation: leftArrow 0.5s infinite linear;
 }
 @keyframes rightArrow {
@@ -310,17 +413,6 @@ export default {
 }
 .prev:hover {
   opacity: 0.7;
-}
-.down {
-  position: absolute;
-  bottom: 0;
-  height: 50px;
-  width: 10%;
-  left: 45%;
-  background-color: gray;
-  z-index: 1000000;
-  opacity: 0.3;
-  transition: all 0.1s ease-in;
 }
 .next:hover {
   opacity: 0.7;
@@ -357,14 +449,14 @@ export default {
   width: 30px;
   top: 100px;
   left: 150px;
-  z-index: 100;
+  z-index: 10;
   font-family: 'mincho';
 }
 .header-subtitle {
   position: absolute;
   top: 200px;
   left: 150px;
-  z-index: 100;
+  z-index: 10;
   font-family: 'mincho';
 }
 .transition-slide-enter-active,
@@ -385,7 +477,7 @@ export default {
 }
 .ref-area {
   position: absolute;
-  z-index: 100;
+  z-index: 10;
   top: 90%;
   left: 90%;
 }
@@ -403,7 +495,7 @@ export default {
   display: inline-block;
   width: 300px;
   position: absolute;
-  z-index: 1000000;
+  z-index: 10;
   cursor: pointer;
   text-align: center;
   vertical-align: middle;
@@ -412,7 +504,7 @@ export default {
   position: absolute;
   width: 300px;
   height: 30px;
-  z-index: 1000;
+  z-index: 10;
   bottom: 40px;
   left: 50px;
 
@@ -497,4 +589,14 @@ export default {
   z-index: 100;
 }
 */
+.fade-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background-color: black;
+  z-index: 120;
+  opacity: 0.5;
+}
 </style>
