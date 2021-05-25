@@ -59,11 +59,11 @@ export default {
     return {
       color: "black",
       urls: [
-        'url('+'http://www.imamiya.jp/haruhanakyoko/info/kiyomizu00trin.jpg'+')',
+        'url('+'https://upload.wikimedia.org/wikipedia/commons/a/a7/Kiyomizudera_engi_emaki_-_Scroll1_Pic3.jpg'+')',
         'url('+'https://upload.wikimedia.org/wikipedia/commons/3/35/Kiyomizu_Temple_-_01.jpg'+')',
         'url('+'https://upload.wikimedia.org/wikipedia/commons/6/6b/Kiyomizu-dera-2a.jpg'+')',
         'url('+'https://upload.wikimedia.org/wikipedia/commons/4/42/Kiyomizu-dera_in_Kyoto-r.jpg'+')',
-        'url('+'http://kyotomoyou.jp/sys/wp-content/uploads/2015/01/kiyomizudera-yuki-201501.jpg'+')'
+        'url('+'https://upload.wikimedia.org/wikipedia/commons/f/f0/Japan_Kyoto_KiyoMizuDera_entrance_DSC00604.jpg'+')'
       ],
       index: 0,
       intervalId:0,
