@@ -15,8 +15,9 @@ jobs:
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TZ: 'Asia/Tokyo'
         with:
-          tag_name: v1
+          tag_name: $(date +'%Y-%m-%d %H:%M:%S')
           release_name: Release ${{ github.ref }}
           body: |
             Changes in this Release
