@@ -24,7 +24,7 @@ jobs:
         with:
           tag_name: v${{ env.CURRENT_DATETIME }}
           release_name: ${{ env.CURRENT_DATETIME }}
-          body: ${{ github.event.pull_request.body }}
+          body: hoge
           draft: true
           prerelease: false
 
