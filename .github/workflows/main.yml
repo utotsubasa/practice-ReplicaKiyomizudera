@@ -10,14 +10,18 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@master
+      - name: Get current date and time
+        env:
+          TZ: "Asia/Tokyo"
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y.%m.%d)"
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          TZ: 'Asia/Tokyo'
         with:
-          tag_name: $(date +'%Y-%m-%d %H:%M:%S')
+          tag_name: v${{ steps.date.outputs.date }}
           release_name: Release ${{ github.ref }}
           body: |
             Changes in this Release
