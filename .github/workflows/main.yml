@@ -1,12 +1,11 @@
 on:
   push:
-    branches:
-      - master
 
 name: Create Release
 
 jobs:
   build:
+    if: github.ref == 'refs/heads/master'
     name: Create Release
     runs-on: ubuntu-latest
     steps:
