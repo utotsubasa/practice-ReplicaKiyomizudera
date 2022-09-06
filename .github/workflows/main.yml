@@ -14,14 +14,14 @@ jobs:
         env:
           TZ: "Asia/Tokyo"
         id: date
-        run: echo "::set-output name=date::$(date +'%Y-%m-%d)"
+        run: echo "CURRENT_DATETIME=$(date +'%Y-%m-%d %H:%M:%S')" >> $GITHUB_ENV
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: v ${{ steps.date.outputs.date }}
+          tag_name: v ${{ env.CURRENT_DATETIME }}
           release_name: Release ${{ github.ref }}
           body: |
             Changes in this Release
